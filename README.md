@@ -9,9 +9,6 @@
     </a>
 
 
-[官方ptuning代码](https://github.com/THUDM/ChatGLM-6B/blob/main/ptuning)
-
-
 ## Demo
 
 - [开源版的文心一言](https://github.com/visual-openllm/visual-openllm)
@@ -45,7 +42,7 @@ tokenization
 python tokenize_dataset_rows.py \
     --jsonl_path data/alpaca_data.jsonl \
     --save_path data/alpaca \
-    --max_seq_length 200 \ 
+    --max_seq_length 2000 \
     --skip_overlength
 ```
 
@@ -109,3 +106,5 @@ python finetune.py \
 - ~~bs > 1 support~~
 - 使用中文数据
 - 加入RLHF
+## 
+python finetune.py --dataset_path data/k8s/test --lora_rank 8 --per_device_train_batch_size 6 --gradient_accumulation_steps 1 --max_steps 52000 --save_steps 1000 --save_total_limit 2 --learning_rate 1e-4 --fp16 --remove_unused_columns false --logging_steps 50 --output_dir output

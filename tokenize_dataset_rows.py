@@ -9,13 +9,19 @@ import transformers
 def preprocess(tokenizer, config, example, max_seq_length):
     prompt = example["context"]
     target = example["target"]
-    prompt_ids = tokenizer.encode(prompt, max_length=max_seq_length, truncation=True)
+    prompt_ids = []
+    if prompt != "":
+        prompt_ids = tokenizer.encode(prompt, max_length=max_seq_length, truncation=True)
     target_ids = tokenizer.encode(
         target,
         max_length=max_seq_length,
         truncation=True,
         add_special_tokens=False)
-    input_ids = prompt_ids + target_ids + [config.eos_token_id]
+    input_ids = []
+    if prompt != "":
+        input_ids = prompt_ids + target_ids + [config.eos_token_id]
+    else:
+        input_ids = target_ids + [config.eos_token_id]
     return {"input_ids": input_ids, "seq_len": len(prompt_ids)}
 
 
@@ -37,10 +43,11 @@ def read_jsonl(path, max_seq_length, skip_overlength=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--jsonl_path", type=str, default="data/alpaca_data.jsonl")
-    parser.add_argument("--save_path", type=str, default="data/alpaca")
-    parser.add_argument("--max_seq_length", type=int, default=384)
+    parser.add_argument("--jsonl_path", type=str, default="data/k8s/test.jsonl")
+    parser.add_argument("--save_path", type=str, default="data/k8s/test")
+    parser.add_argument("--max_seq_length", type=int, default=2046)
     parser.add_argument("--skip_overlength", type=bool, default=False)
+    parser.add_argument("--add_eos_token", type=bool, default=False)
     args = parser.parse_args()
 
     dataset = datasets.Dataset.from_generator(
